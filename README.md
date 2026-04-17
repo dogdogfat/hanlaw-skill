@@ -29,9 +29,9 @@
 ### 👉 [**웹 빌더로 설치하기 (클릭)**](https://dogdogfat.github.io/hanlaw-skill/)
 
 1. [open.law.go.kr](https://open.law.go.kr) 가입 → Open API 신청 (**자동 승인**)
-2. 웹 빌더에 API 키 붙여넣기
-3. ZIP 다운로드 → `~/.claude/skills/hanlaw-skill/` 에 풀기
-4. Claude 재시작 후 "근로기준법 제50조 알려줘" 로 테스트
+2. 웹 빌더에서 OS 선택(macOS/Windows) + API 키 붙여넣기 → ZIP 다운로드
+3. Claude 앱 사이드바 → **Customize → Skills → [+ 추가] → [스킬 업로드]** → ZIP 선택
+4. 끝. 바로 "근로기준법 제50조 알려줘" 로 테스트해보세요.
 
 > 🔒 입력한 API 키는 브라우저 안에서만 처리되며 외부 서버로 전송되지 않습니다.
 
@@ -44,33 +44,49 @@
 - **계약서/약관 자동 분석**: 문서 붙여넣기 → 조항별 법적 이슈 탐지
 - **도메인 자동 분류** (노동·개인정보·부동산·소비자·세금·금융 등 13개)
 
-## 📂 Skill 설치 경로
+## 📦 설치 방법
 
-Claude Desktop·Claude Code 모두 동일 경로를 사용합니다. Skill 신규 추가 시 Claude 1회 재시작 필요 (이후 파일 수정은 자동 감지).
+### 방법 1 — Claude 앱에서 ZIP 업로드 (추천)
 
-### 🍎 macOS / Linux
+OS와 무관하게 가장 빠릅니다.
+
+1. Claude 앱 사이드바에서 **[Customize]** 클릭
+2. **[Skills]** 탭 선택
+3. 우측 상단 **[+ 추가]** → **[스킬 업로드]**
+4. 웹 빌더에서 받은 `hanlaw-skill-mac.zip` 또는 `hanlaw-skill-win.zip` 업로드 → 완료
+
+재시작·폴더 탐색 불필요.
+
+### 방법 2 — 파일 탐색기로 수동 복사 (고급)
+
+<details>
+<summary>🍎 macOS / Linux</summary>
 
 ```
 ~/.claude/skills/hanlaw-skill/
 ```
 
-Finder에서 `Cmd+Shift+G` → 위 경로 붙여넣기 → 웹 빌더에서 받은 `hanlaw-skill` 폴더를 통째로 복사.
+Finder에서 `Cmd+Shift+G` → 위 경로 붙여넣기 → 웹 빌더에서 받은 ZIP을 풀어 `hanlaw-skill` 폴더를 통째로 복사 → Claude 재시작.
+</details>
 
-### 🪟 Windows
+<details>
+<summary>🪟 Windows</summary>
 
 ```
 %USERPROFILE%\.claude\skills\hanlaw-skill\
 ```
 
-파일 탐색기 주소창에 `%USERPROFILE%\.claude\skills` 입력 → 웹 빌더에서 받은 `hanlaw-skill` 폴더를 통째로 복사.
+파일 탐색기 주소창에 `%USERPROFILE%\.claude\skills` 입력 → 웹 빌더에서 받은 ZIP을 풀어 `hanlaw-skill` 폴더를 통째로 복사 → Claude 재시작.
+</details>
 
-**Windows 추가 설정** — OpenLaw API는 호출 PC의 공인 IP가 등록되어 있어야 합니다:
+### 📡 공인 IP 등록 (응답이 없을 때)
 
-1. 공인 IP 확인 (PowerShell):
-   ```powershell
-   (Invoke-WebRequest -Uri https://api.ipify.org).Content
-   ```
-2. [open.law.go.kr](https://open.law.go.kr) → 마이페이지 → **API인증값변경**에서 해당 IP 등록
+OpenLaw API는 호출 PC의 공인 IP가 등록되어 있어야 응답합니다. Skill 설치 후 "응답 없음" / "IP 미등록" 오류가 나오면:
+
+1. 공인 IP 확인
+   - 🍎 macOS/Linux: `curl -s https://api.ipify.org`
+   - 🪟 Windows (PowerShell): `(Invoke-WebRequest -Uri https://api.ipify.org).Content`
+2. [open.law.go.kr](https://open.law.go.kr) → 마이페이지 → **[API인증값변경]** → 위 IP 등록
 
 > 공식 문서: [Extend Claude with skills](https://code.claude.com/docs/en/skills)
 
