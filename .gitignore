@@ -1,0 +1,34 @@
+# 민감 정보
+**/.env
+**/.env.local
+*.key
+*.pem
+
+# 원본 zip 배포본 (절대 커밋 금지)
+lexguard-macos.zip
+lexguard-windows.zip
+lexguard_skill.zip
+hanlaw-skill.zip
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# 편집기
+.vscode/
+.idea/
+*.swp
+
+# 빌드/로그
+*.log
+dist/
+build/
+node_modules/
