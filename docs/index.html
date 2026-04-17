@@ -123,64 +123,91 @@
         <h2>Claude에 Skill 설치하기</h2>
       </div>
 
-      <div class="install-guide" data-os="mac">
-        <h3>🍎 macOS / Linux</h3>
-        <p>Claude Desktop·Claude Code 모두 <strong>동일한 경로</strong>를 사용합니다.</p>
+      <div class="install-method primary">
+        <h3>✨ 방법 1 — Claude 앱에서 ZIP 업로드 <span class="badge-rec">추천</span></h3>
+        <p>OS와 무관하게 가장 빠른 방법. 다운로드한 ZIP을 그대로 불러오면 끝.</p>
         <ol class="flow">
-          <li>다운로드한 <code>hanlaw-skill.zip</code>을 더블클릭해 압축 풀기</li>
           <li>
-            Finder에서 <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd> →
-            아래 경로를 붙여넣기 (없으면 직접 생성):
-            <pre><code>~/.claude/skills/</code></pre>
+            Claude 앱 <strong>사이드바</strong>에서 <strong>[Customize]</strong>(커스터마이즈) 클릭
           </li>
           <li>
-            압축 푼 <code>hanlaw-skill</code> 폴더 <strong>전체</strong>를
-            위 <code>skills/</code> 안에 복사
-            <br/>
-            → 최종 경로: <code>~/.claude/skills/hanlaw-skill/SKILL.md</code>
+            <strong>[Skills]</strong> 탭 선택
           </li>
           <li>
-            Claude Desktop/Code를 재시작 (새 Skill 추가 시 한 번 필요).
-            <br/>
-            <span class="tag">Tip</span> 이후 Skill 파일 수정은 자동 감지돼서 재시작 불필요
+            우측 상단 <strong>[+ 추가]</strong> 버튼 클릭 →
+            <strong>[스킬 업로드]</strong> 선택
           </li>
           <li>
-            새 대화에서 테스트:
+            방금 다운로드한 <code>hanlaw-skill-mac.zip</code> /
+            <code>hanlaw-skill-win.zip</code> 을 업로드
+          </li>
+          <li>
+            Skill이 자동 등록됨 → 새 대화에서 테스트:
             <blockquote>근로기준법 제50조 내용 알려줘</blockquote>
           </li>
         </ol>
+        <p class="hint">
+          💡 이 방법은 재시작이 필요하지 않고, 파일 탐색기로 경로를 찾을 필요도 없습니다.
+        </p>
       </div>
 
-      <div class="install-guide" data-os="win" hidden>
-        <h3>🪟 Windows</h3>
-        <p>PowerShell 또는 파일 탐색기에서 아래 경로로 이동해 설치합니다.</p>
+      <details class="install-method alt">
+        <summary>🛠 방법 2 — 파일 탐색기/Finder에서 수동 복사 (고급)</summary>
+
+        <div class="install-guide" data-os="mac">
+          <h4>🍎 macOS / Linux</h4>
+          <ol class="flow">
+            <li>다운로드한 <code>hanlaw-skill-mac.zip</code>을 더블클릭해 압축 풀기</li>
+            <li>
+              Finder에서 <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd> →
+              아래 경로를 붙여넣기 (없으면 직접 생성):
+              <pre><code>~/.claude/skills/</code></pre>
+            </li>
+            <li>
+              압축 푼 <code>hanlaw-skill</code> 폴더 <strong>전체</strong>를
+              위 <code>skills/</code> 안에 복사<br/>
+              → 최종 경로: <code>~/.claude/skills/hanlaw-skill/SKILL.md</code>
+            </li>
+            <li>Claude Desktop/Code 재시작</li>
+          </ol>
+        </div>
+
+        <div class="install-guide" data-os="win" hidden>
+          <h4>🪟 Windows</h4>
+          <ol class="flow">
+            <li>다운로드한 <code>hanlaw-skill-win.zip</code>을 우클릭 → <strong>[압축 풀기]</strong></li>
+            <li>
+              파일 탐색기 주소창에 아래를 붙여넣고 <kbd>Enter</kbd> (경로 없으면 직접 생성):
+              <pre><code>%USERPROFILE%\.claude\skills</code></pre>
+            </li>
+            <li>
+              압축 푼 <code>hanlaw-skill</code> 폴더 <strong>전체</strong>를
+              위 <code>skills</code> 폴더 안에 복사<br/>
+              → 최종 경로: <code>%USERPROFILE%\.claude\skills\hanlaw-skill\SKILL.md</code>
+            </li>
+            <li>Claude Desktop/Code 재시작</li>
+          </ol>
+        </div>
+      </details>
+
+      <div class="windows-extra">
+        <h3>📡 공인 IP 등록 (응답이 없을 때)</h3>
+        <p>
+          OpenLaw API는 <strong>호출 PC의 공인 IP가 등록</strong>되어 있어야 응답합니다.
+          Skill 설치 후 "응답 없음" / "IP 미등록" 오류가 나오면 아래를 진행하세요.
+        </p>
         <ol class="flow">
-          <li>다운로드한 <code>hanlaw-skill-win.zip</code>을 우클릭 → <strong>[압축 풀기]</strong></li>
           <li>
-            파일 탐색기 주소창에 아래를 붙여넣고 <kbd>Enter</kbd>
-            (경로가 없으면 폴더 만들기):
-            <pre><code>%USERPROFILE%\.claude\skills</code></pre>
-            또는 PowerShell에서:
-            <pre><code>New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\skills"</code></pre>
-          </li>
-          <li>
-            압축 푼 <code>hanlaw-skill</code> 폴더 <strong>전체</strong>를
-            위 <code>skills</code> 폴더 안에 복사
+            공인 IP 확인:
             <br/>
-            → 최종 경로: <code>%USERPROFILE%\.claude\skills\hanlaw-skill\SKILL.md</code>
-          </li>
-          <li>
-            <strong>API 호출 IP 등록</strong>:
-            <a href="https://open.law.go.kr" target="_blank" rel="noopener">open.law.go.kr</a>
-            → 마이페이지 → API인증값변경 → 본인 PC의 공인 IP 추가
+            🍎 macOS/Linux (터미널): <code>curl -s https://api.ipify.org</code>
             <br/>
-            <span class="tag">공인 IP 확인</span>
+            🪟 Windows (PowerShell):
             <pre><code>(Invoke-WebRequest -Uri https://api.ipify.org).Content</code></pre>
           </li>
-          <li>Claude Desktop/Code를 재시작</li>
           <li>
-            새 대화에서 테스트:
-            <blockquote>근로기준법 제50조 내용 알려줘</blockquote>
+            <a href="https://open.law.go.kr" target="_blank" rel="noopener">open.law.go.kr</a>
+            → 마이페이지 → <strong>[API인증값변경]</strong> → 위에서 확인한 IP 추가
           </li>
         </ol>
       </div>

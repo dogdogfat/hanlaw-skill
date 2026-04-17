@@ -255,10 +255,88 @@ ol.flow blockquote {
 .os-icon { font-size: 1.15rem; }
 
 /* Install guide per-OS */
-.install-guide h3 {
+.install-guide h3,
+.install-guide h4 {
   margin: 10px 0 12px;
   font-size: 1.05rem;
   color: var(--accent);
+}
+
+/* Install method containers (Step 3) */
+.install-method {
+  margin-top: 18px;
+  padding: 22px 24px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.install-method.primary {
+  background: linear-gradient(0deg, #f0f6ff, #ffffff);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(11, 94, 215, 0.08);
+}
+.install-method.primary h3 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.install-method.primary > p {
+  color: var(--fg-muted);
+  margin: 0 0 10px;
+}
+.install-method.alt {
+  background: var(--bg);
+  padding: 14px 20px;
+}
+.install-method.alt summary {
+  font-weight: 600;
+  color: var(--fg);
+  padding: 4px 0;
+  cursor: pointer;
+}
+.install-method.alt[open] summary {
+  margin-bottom: 14px;
+  color: var(--accent);
+}
+.install-method.alt .install-guide {
+  margin-top: 6px;
+}
+
+/* "추천" badge */
+.badge-rec {
+  display: inline-block;
+  padding: 2px 10px;
+  background: var(--ok);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border-radius: 12px;
+  vertical-align: middle;
+}
+
+/* Windows extra / IP registration callout */
+.windows-extra {
+  margin-top: 18px;
+  padding: 20px 22px;
+  border-radius: 10px;
+  background: var(--warn-bg);
+  border: 1px solid #f4cf8a;
+}
+.windows-extra h3 {
+  margin: 0 0 10px;
+  font-size: 1.05rem;
+  color: var(--warn);
+}
+.windows-extra > p {
+  color: #6b3a0a;
+  margin: 0 0 10px;
+}
+.windows-extra ol.flow li {
+  border-bottom-color: #f4cf8a;
 }
 .builder input[type="text"] {
   width: 100%;
