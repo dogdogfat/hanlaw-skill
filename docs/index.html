@@ -81,9 +81,21 @@
         <span class="step-num">2</span>
         <h2>내 API 키로 Skill 만들기</h2>
       </div>
-      <p>발급받은 API 키를 아래에 붙여넣으세요.</p>
+      <p>사용 중인 OS를 선택하고 발급받은 API 키를 붙여넣으세요.</p>
 
       <div class="builder">
+        <fieldset class="os-picker">
+          <legend>운영체제 선택</legend>
+          <label class="os-option">
+            <input type="radio" name="os" value="mac" checked />
+            <span class="os-label"><span class="os-icon">🍎</span> macOS / Linux</span>
+          </label>
+          <label class="os-option">
+            <input type="radio" name="os" value="win" />
+            <span class="os-label"><span class="os-icon">🪟</span> Windows</span>
+          </label>
+        </fieldset>
+
         <label for="api-key">LAW_API_KEY</label>
         <input
           type="text"
@@ -108,32 +120,71 @@
     <section class="step">
       <div class="step-header">
         <span class="step-num">3</span>
-        <h2>Claude에 Skill 설치하기 (macOS)</h2>
+        <h2>Claude에 Skill 설치하기</h2>
       </div>
-      <p>Claude Desktop·Claude Code 모두 <strong>동일한 경로</strong>를 사용합니다.</p>
-      <ol class="flow">
-        <li>다운로드한 <code>hanlaw-skill.zip</code>을 더블클릭해 압축 풀기</li>
-        <li>
-          Finder에서 <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd> →
-          아래 경로를 붙여넣기 (없으면 직접 생성):
-          <pre><code>~/.claude/skills/</code></pre>
-        </li>
-        <li>
-          압축 푼 <code>hanlaw-skill</code> 폴더 <strong>전체</strong>를
-          위 <code>skills/</code> 안에 복사
-          <br/>
-          → 최종 경로: <code>~/.claude/skills/hanlaw-skill/SKILL.md</code>
-        </li>
-        <li>
-          Claude Desktop/Code를 재시작 (새 Skill 추가 시 한 번 필요).
-          <br/>
-          <span class="tag">Tip</span> 이후 Skill 파일 수정은 자동 감지돼서 재시작 불필요
-        </li>
-        <li>
-          새 대화에서 테스트:
-          <blockquote>근로기준법 제50조 내용 알려줘</blockquote>
-        </li>
-      </ol>
+
+      <div class="install-guide" data-os="mac">
+        <h3>🍎 macOS / Linux</h3>
+        <p>Claude Desktop·Claude Code 모두 <strong>동일한 경로</strong>를 사용합니다.</p>
+        <ol class="flow">
+          <li>다운로드한 <code>hanlaw-skill.zip</code>을 더블클릭해 압축 풀기</li>
+          <li>
+            Finder에서 <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd> →
+            아래 경로를 붙여넣기 (없으면 직접 생성):
+            <pre><code>~/.claude/skills/</code></pre>
+          </li>
+          <li>
+            압축 푼 <code>hanlaw-skill</code> 폴더 <strong>전체</strong>를
+            위 <code>skills/</code> 안에 복사
+            <br/>
+            → 최종 경로: <code>~/.claude/skills/hanlaw-skill/SKILL.md</code>
+          </li>
+          <li>
+            Claude Desktop/Code를 재시작 (새 Skill 추가 시 한 번 필요).
+            <br/>
+            <span class="tag">Tip</span> 이후 Skill 파일 수정은 자동 감지돼서 재시작 불필요
+          </li>
+          <li>
+            새 대화에서 테스트:
+            <blockquote>근로기준법 제50조 내용 알려줘</blockquote>
+          </li>
+        </ol>
+      </div>
+
+      <div class="install-guide" data-os="win" hidden>
+        <h3>🪟 Windows</h3>
+        <p>PowerShell 또는 파일 탐색기에서 아래 경로로 이동해 설치합니다.</p>
+        <ol class="flow">
+          <li>다운로드한 <code>hanlaw-skill-win.zip</code>을 우클릭 → <strong>[압축 풀기]</strong></li>
+          <li>
+            파일 탐색기 주소창에 아래를 붙여넣고 <kbd>Enter</kbd>
+            (경로가 없으면 폴더 만들기):
+            <pre><code>%USERPROFILE%\.claude\skills</code></pre>
+            또는 PowerShell에서:
+            <pre><code>New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\skills"</code></pre>
+          </li>
+          <li>
+            압축 푼 <code>hanlaw-skill</code> 폴더 <strong>전체</strong>를
+            위 <code>skills</code> 폴더 안에 복사
+            <br/>
+            → 최종 경로: <code>%USERPROFILE%\.claude\skills\hanlaw-skill\SKILL.md</code>
+          </li>
+          <li>
+            <strong>API 호출 IP 등록</strong>:
+            <a href="https://open.law.go.kr" target="_blank" rel="noopener">open.law.go.kr</a>
+            → 마이페이지 → API인증값변경 → 본인 PC의 공인 IP 추가
+            <br/>
+            <span class="tag">공인 IP 확인</span>
+            <pre><code>(Invoke-WebRequest -Uri https://api.ipify.org).Content</code></pre>
+          </li>
+          <li>Claude Desktop/Code를 재시작</li>
+          <li>
+            새 대화에서 테스트:
+            <blockquote>근로기준법 제50조 내용 알려줘</blockquote>
+          </li>
+        </ol>
+      </div>
+
       <p class="hint">
         📖 공식 문서: <a href="https://code.claude.com/docs/en/skills" target="_blank" rel="noopener">Extend Claude with skills</a>
       </p>

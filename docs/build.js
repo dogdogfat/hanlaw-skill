@@ -1,6 +1,6 @@
 // hanlaw-skill 빌더 — 클라이언트 사이드 ZIP 생성
 // 사용자의 API 키를 템플릿 파일에 주입해 Claude Skill ZIP을 만든다.
-// 모든 처리는 브라우저 안에서만 이뤄지며 외부 서버 통신 없음.
+// OS 선택(mac/win)에 따라 다른 SKILL.md를 포함하며, 모든 처리는 브라우저 안에서만 이뤄진다.
 
 (function () {
   "use strict";
@@ -12,7 +12,21 @@
     input: document.getElementById("api-key"),
     btn: document.getElementById("build-btn"),
     status: document.getElementById("build-status"),
+    osRadios: document.querySelectorAll('input[name="os"]'),
+    guides: document.querySelectorAll(".install-guide"),
   };
+
+  function currentOS() {
+    const checked = document.querySelector('input[name="os"]:checked');
+    return checked ? checked.value : "mac";
+  }
+
+  function syncInstallGuide() {
+    const os = currentOS();
+    els.guides.forEach((g) => {
+      g.hidden = g.dataset.os !== os;
+    });
+  }
 
   function setStatus(msg, type) {
     els.status.textContent = msg;
@@ -42,12 +56,16 @@
       return;
     }
 
+    const os = currentOS();
+    const skillFile = os === "win" ? "SKILL-win.md" : "SKILL-mac.md";
+    const zipName = os === "win" ? `${SKILL_NAME}-win.zip` : `${SKILL_NAME}-mac.zip`;
+
     els.btn.disabled = true;
-    setStatus("템플릿 파일 로딩 중…", "");
+    setStatus(`템플릿 파일 로딩 중… (${os === "win" ? "Windows" : "macOS"})`, "");
 
     try {
       const [skillMd, apiPyTpl, kwJson, devlog] = await Promise.all([
-        fetchText("templates/SKILL.md"),
+        fetchText(`templates/${skillFile}`),
         fetchText("templates/lexguard_api.py.tpl"),
         fetchText("templates/domain_keywords.json"),
         fetchText("templates/DEVLOG.md"),
@@ -74,18 +92,19 @@
         compressionOptions: { level: 6 },
       });
 
-      const filename = `${SKILL_NAME}.zip`;
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = filename;
+      a.download = zipName;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 1000);
 
       setStatus(
-        `✅ ${filename} 다운로드 시작됨. 압축 풀어서 Claude skills 폴더에 배치하세요.`,
+        `✅ ${zipName} 다운로드 시작됨. 아래 Step 3 가이드대로 ${
+          os === "win" ? "Windows" : "macOS"
+        } 설치 경로에 배치하세요.`,
         "ok"
       );
     } catch (e) {
@@ -100,4 +119,8 @@
   els.input.addEventListener("keydown", (e) => {
     if (e.key === "Enter") build();
   });
+  els.osRadios.forEach((r) => r.addEventListener("change", syncInstallGuide));
+
+  // 초기 동기화
+  syncInstallGuide();
 })();

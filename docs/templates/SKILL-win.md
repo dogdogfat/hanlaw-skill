@@ -1,9 +1,9 @@
 ---
 name: hanlaw-skill
-description: "한국 법령·판례·법령해석 조회 Skill (macOS/Linux 버전). Use when the user asks about Korean law, court precedents, or legal interpretations, or requests contract/terms analysis. Calls the Korea National Law Information Center Open API."
+description: "한국 법령·판례·법령해석 조회 Skill (Windows 버전). Use when the user asks about Korean law, court precedents, or legal interpretations, or requests contract/terms analysis. Calls the Korea National Law Information Center Open API."
 ---
 
-# hanlaw-skill — 한국 법률 정보 조회 Skill (macOS / Linux)
+# hanlaw-skill — 한국 법률 정보 조회 Skill (Windows)
 
 > Helps find threads of legal information.
 > Does NOT replace legal counsel. Provides information based on official statute/precedent data.
@@ -140,14 +140,25 @@ If count == 0 or the list is empty, omit both sections entirely. Do NOT write "�
 >  The Korea National Law Information Center Open API only works when the **calling PC's public IP is registered**.
 > 1. Log in at https://open.law.go.kr
 > 2. Go to [My Page] → [API Authentication Value Change] and add your current PC's public IP
-> 3. Check public IP:
->    ```bash
->    curl -s https://api.ipify.org
+> 3. Check public IP (PowerShell):
+>    ```powershell
+>    (Invoke-WebRequest -Uri https://api.ipify.org).Content
 >    ```
 
-### API Key Configuration
+### API Key Setup
 
-The API key is embedded directly in `scripts/lexguard_api.py`. No `.env` file or environment variable setup required.
+The web builder (https://dogdogfat.github.io/hanlaw-skill/) injects your issued key into `scripts/lexguard_api.py` automatically.
+For manual installation, either edit `_BUILTIN_API_KEY` in that file or set the `LAW_API_KEY` environment variable:
+
+```powershell
+$env:LAW_API_KEY = "YOUR_ISSUED_KEY_HERE"
+```
+
+Or set persistently via System Environment Variables:
+
+```powershell
+[System.Environment]::SetEnvironmentVariable("LAW_API_KEY", "YOUR_ISSUED_KEY_HERE", "User")
+```
 
 ## Execution Policy
 
@@ -159,6 +170,26 @@ The API key is embedded directly in `scripts/lexguard_api.py`. No `.env` file or
 ## Usage
 
 When a legal question is received, follow the workflow below.
+
+>  **Top Priority Step**: ALWAYS run Step 0 to load the API key **before** calling any API.
+> Skipping Step 0 will cause API calls to fail. **Never skip it.**
+
+### Step 0: API Key Verification ( Required — Must verify before all API calls)
+
+>  **The script auto-loads the .env file.** If the API key exists in the skill root's `.env` file, it's auto-recognized.
+> Only use the method below if the `.env` file is missing or the key is absent.
+
+**API key location:** Write in `%SKILL_DIR%\.env` file in the following format:
+
+```
+LAW_API_KEY=YOUR_ISSUED_KEY
+```
+
+**Verify (optional):**
+
+```cmd
+python "%SKILL_DIR%\scripts\lexguard_api.py" verify_config
+```
 
 ### Step 1: Analyze Question and Classify Domain
 
@@ -174,11 +205,11 @@ Analyze the user's question and classify into one of these domains:
 - **Family** — Marriage, divorce, inheritance, parental rights
 - **Administrative** — Administrative law, permits, administrative litigation
 
-Domain keyword reference: `resources/domain_keywords.json`
+Domain keyword reference: `resources\domain_keywords.json`
 
 ### Step 2: Perform Appropriate Search
 
-> Always run scripts relative to `$SKILL_DIR/scripts/` path.
+> Always run scripts relative to `%SKILL_DIR%\scripts\` path.
 
 >  **Below is a command reference. Execute ONLY the command matching the user's question.**
 > **NEVER execute all commands sequentially.**
@@ -187,8 +218,8 @@ Domain keyword reference: `resources/domain_keywords.json`
 
 For complex legal questions, use `smart_qa` first. Auto-analyzes intent (statute/precedent/interpretation) and searches up to 2 types simultaneously.
 
-```bash
-python3 "$SKILL_DIR/scripts/lexguard_api.py" smart_qa --query "freelancer worker status criteria" --max-results 3
+```cmd
+python "%SKILL_DIR%\scripts\lexguard_api.py" smart_qa --query "freelancer worker status criteria" --max-results 3
 ```
 
 **Response field descriptions:**
@@ -201,91 +232,91 @@ python3 "$SKILL_DIR/scripts/lexguard_api.py" smart_qa --query "freelancer worker
 
 #### 2-1. Statute Search (Find acts/enforcement decrees/rules)
 
-```bash
-python3 "$SKILL_DIR/scripts/lexguard_api.py" search_law --query "search_term" --page 1
+```cmd
+python "%SKILL_DIR%\scripts\lexguard_api.py" search_law --query "search_term" --page 1
 ```
 
 Statute detail (view article content by statute ID):
-```bash
-python3 "$SKILL_DIR/scripts/lexguard_api.py" get_law --law-id "statuteMST" --article "article_number"
+```cmd
+python "%SKILL_DIR%\scripts\lexguard_api.py" get_law --law-id "statuteMST" --article "article_number"
 ```
 
 #### 2-2. Precedent Search
 
-```bash
-python3 "$SKILL_DIR/scripts/lexguard_api.py" search_prec --query "search_term" --page 1
+```cmd
+python "%SKILL_DIR%\scripts\lexguard_api.py" search_prec --query "search_term" --page 1
 ```
 
 Precedent detail:
-```bash
-python3 "$SKILL_DIR/scripts/lexguard_api.py" get_prec --prec-id "precedent_serial"
+```cmd
+python "%SKILL_DIR%\scripts\lexguard_api.py" get_prec --prec-id "precedent_serial"
 ```
 
 #### 2-3. Legal Interpretation Search
 
-```bash
-python3 "$SKILL_DIR/scripts/lexguard_api.py" search_interp --query "search_term" --page 1
+```cmd
+python "%SKILL_DIR%\scripts\lexguard_api.py" search_interp --query "search_term" --page 1
 ```
 
 Interpretation detail:
-```bash
-python3 "$SKILL_DIR/scripts/lexguard_api.py" get_interp --interp-id "interpretation_ID"
+```cmd
+python "%SKILL_DIR%\scripts\lexguard_api.py" get_interp --interp-id "interpretation_ID"
 ```
 
 #### 2-4. Administrative Rules Search (Directives/notices/guidelines)
 
-```bash
-python3 "$SKILL_DIR/scripts/lexguard_api.py" search_admrul --query "search_term" --page 1
+```cmd
+python "%SKILL_DIR%\scripts\lexguard_api.py" search_admrul --query "search_term" --page 1
 ```
 
 Administrative rule detail:
-```bash
-python3 "$SKILL_DIR/scripts/lexguard_api.py" get_admrul --admrul-id "admin_rule_ID"
+```cmd
+python "%SKILL_DIR%\scripts\lexguard_api.py" get_admrul --admrul-id "admin_rule_ID"
 ```
 
 #### 2-5. Local Ordinance Search (Ordinances/rules)
 
-```bash
-python3 "$SKILL_DIR/scripts/lexguard_api.py" search_ordin --query "search_term" --page 1
+```cmd
+python "%SKILL_DIR%\scripts\lexguard_api.py" search_ordin --query "search_term" --page 1
 ```
 
 Ordinance detail:
-```bash
-python3 "$SKILL_DIR/scripts/lexguard_api.py" get_ordin --ordin-id "ordinance_ID"
+```cmd
+python "%SKILL_DIR%\scripts\lexguard_api.py" get_ordin --ordin-id "ordinance_ID"
 ```
 
 #### 2-6. Constitutional Court Decision Search
 
-```bash
-python3 "$SKILL_DIR/scripts/lexguard_api.py" search_detc --query "search_term" --page 1
+```cmd
+python "%SKILL_DIR%\scripts\lexguard_api.py" search_detc --query "search_term" --page 1
 ```
 
 Decision detail:
-```bash
-python3 "$SKILL_DIR/scripts/lexguard_api.py" get_detc --detc-id "decision_ID"
+```cmd
+python "%SKILL_DIR%\scripts\lexguard_api.py" get_detc --detc-id "decision_ID"
 ```
 
 #### 2-7. Administrative Appeal Ruling Search
 
-```bash
-python3 "$SKILL_DIR/scripts/lexguard_api.py" search_decc --query "search_term" --page 1
+```cmd
+python "%SKILL_DIR%\scripts\lexguard_api.py" search_decc --query "search_term" --page 1
 ```
 
 Appeal ruling detail:
-```bash
-python3 "$SKILL_DIR/scripts/lexguard_api.py" get_decc --decc-id "ruling_ID"
+```cmd
+python "%SKILL_DIR%\scripts\lexguard_api.py" get_decc --decc-id "ruling_ID"
 ```
 
 #### 2-8. Committee Decision Search
 
 Search and view decisions from 11 committees. Specify with `--committee`.
 
-```bash
-# Labor Relations Commission unfair dismissal decision search
-python3 "$SKILL_DIR/scripts/lexguard_api.py" search_committee --query "unfair_dismissal" --committee "노동위원회"
+```cmd
+:: Labor Relations Commission unfair dismissal decision search
+python "%SKILL_DIR%\scripts\lexguard_api.py" search_committee --query "unfair_dismissal" --committee "노동위원회"
 
-# Decision detail
-python3 "$SKILL_DIR/scripts/lexguard_api.py" get_committee --committee-id "decision_ID" --committee "노동위원회"
+:: Decision detail
+python "%SKILL_DIR%\scripts\lexguard_api.py" get_committee --committee-id "decision_ID" --committee "노동위원회"
 ```
 
 **Supported committees:**
@@ -307,12 +338,12 @@ python3 "$SKILL_DIR/scripts/lexguard_api.py" get_committee --committee-id "decis
 
 Search rulings from Tax Tribunal, Maritime Safety Tribunal, Anti-Corruption & Civil Rights Commission, Appeals Commission, etc.
 
-```bash
-# Tax Tribunal taxation ruling search
-python3 "$SKILL_DIR/scripts/lexguard_api.py" search_special_appeal --query "taxation_disposition" --tribunal "조세심판원"
+```cmd
+:: Tax Tribunal taxation ruling search
+python "%SKILL_DIR%\scripts\lexguard_api.py" search_special_appeal --query "taxation_disposition" --tribunal "조세심판원"
 
-# Detail
-python3 "$SKILL_DIR/scripts/lexguard_api.py" get_special_appeal --appeal-id "ruling_ID" --tribunal "조세심판원"
+:: Detail
+python "%SKILL_DIR%\scripts\lexguard_api.py" get_special_appeal --appeal-id "ruling_ID" --tribunal "조세심판원"
 ```
 
 **Supported tribunals:**
@@ -325,9 +356,9 @@ python3 "$SKILL_DIR/scripts/lexguard_api.py" get_special_appeal --appeal-id "rul
 
 #### 2-10. Government Official Form Search (Statutory appendix forms)
 
-```bash
-# Search by form name (kind default: 2=forms)
-python3 "$SKILL_DIR/scripts/lexguard_api.py" search_form --query "search_term" --kind 2
+```cmd
+:: Search by form name (kind default: 2=forms)
+python "%SKILL_DIR%\scripts\lexguard_api.py" search_form --query "search_term" --kind 2
 ```
 
 **kind parameter:**
@@ -343,47 +374,42 @@ python3 "$SKILL_DIR/scripts/lexguard_api.py" search_form --query "search_term" -
 
 > From `search_form` results, copy the number after `flSeq=` from the form file link URL.
 
-```bash
-# PDF download (No API key required — direct law.go.kr download)
-python3 "$SKILL_DIR/scripts/lexguard_api.py" download_form \
-    --fl-seq "162953437" \
-    --out "./form_name.pdf"
+```cmd
+:: PDF download (No API key required — direct law.go.kr download)
+python "%SKILL_DIR%\scripts\lexguard_api.py" download_form --fl-seq "162953437" --out ".\form_name.pdf"
 
-# HWP download
-python3 "$SKILL_DIR/scripts/lexguard_api.py" download_form \
-    --fl-seq "162953435" \
-    --format hwp \
-    --out "./form_name.hwp"
+:: HWP download
+python "%SKILL_DIR%\scripts\lexguard_api.py" download_form --fl-seq "162953435" --format hwp --out ".\form_name.hwp"
 ```
 
 >  `download_form` runs without `LAW_API_KEY`.
 
 #### 2-12. Statute Amendment History
 
-```bash
-python3 "$SKILL_DIR/scripts/lexguard_api.py" get_history --law-id "281875"
+```cmd
+python "%SKILL_DIR%\scripts\lexguard_api.py" get_history --law-id "281875"
 ```
 
 #### 2-13. Related Statute Chain Extraction
 
-```bash
-# Specific article only
-python3 "$SKILL_DIR/scripts/lexguard_api.py" get_related --law-id "281875" --article "163"
+```cmd
+:: Specific article only
+python "%SKILL_DIR%\scripts\lexguard_api.py" get_related --law-id "281875" --article "163"
 
-# Entire statute (response may be large)
-python3 "$SKILL_DIR/scripts/lexguard_api.py" get_related --law-id "281875"
+:: Entire statute (response may be large)
+python "%SKILL_DIR%\scripts\lexguard_api.py" get_related --law-id "281875"
 ```
 
 #### 2-14. Document Analysis (PII Detection + Statute Reference Extraction)
 
 Detect personal information in PDF/TXT/MD documents and extract statute references.
 
-```bash
-# Basic analysis (API key required — includes statute lookup)
-python3 "$SKILL_DIR/scripts/lexguard_api.py" analyze_doc --file "contract.pdf"
+```cmd
+:: Basic analysis (API key required — includes statute lookup)
+python "%SKILL_DIR%\scripts\lexguard_api.py" analyze_doc --file "contract.pdf"
 
-# With PII masking
-python3 "$SKILL_DIR/scripts/lexguard_api.py" analyze_doc --file "contract.pdf" --mask-pii
+:: With PII masking
+python "%SKILL_DIR%\scripts\lexguard_api.py" analyze_doc --file "contract.pdf" --mask-pii
 ```
 
 **PII detection targets:** Resident registration number, passport number, driver's license number, phone number, email, bank account number
@@ -430,18 +456,15 @@ When providing search results to users, follow these formats:
 
 When user provides contract or terms text, use the `analyze_contract` command.
 
-```bash
-# Direct text input
-python3 "$SKILL_DIR/scripts/lexguard_api.py" analyze_contract \
-    --text "Article 1: Party A entrusts work to Party B. Article 2: Contract period is 1 year..."
+```cmd
+:: Direct text input
+python "%SKILL_DIR%\scripts\lexguard_api.py" analyze_contract --text "Article 1: Party A entrusts work to Party B. Article 2: Contract period is 1 year..."
 
-# Read from file
-python3 "$SKILL_DIR/scripts/lexguard_api.py" analyze_contract \
-    --file "contract.txt"
+:: Read from file
+python "%SKILL_DIR%\scripts\lexguard_api.py" analyze_contract --file "contract.txt"
 
-# With auto statute search (API key required)
-python3 "$SKILL_DIR/scripts/lexguard_api.py" analyze_contract \
-    --file "contract.txt" --auto-search
+:: With auto statute search (API key required)
+python "%SKILL_DIR%\scripts\lexguard_api.py" analyze_contract --file "contract.txt" --auto-search
 ```
 
 **Analysis process:**
@@ -518,27 +541,12 @@ python3 "$SKILL_DIR/scripts/lexguard_api.py" analyze_contract \
 
 | Tool | Purpose | Required | Install |
 |---|---|---|---|
-| Python 3.10+ | Script execution | **Required** | Built-in on macOS/Linux |
-| `pdfplumber` | PDF text extraction | Recommended | `pip3 install pdfplumber` |
-| `poppler` | PDF fallback extraction | Alternative | `brew install poppler` (macOS) / `sudo apt install poppler-utils` (Linux) |
+| Python 3.10+ | Script execution | **Required** | [python.org](https://python.org) or `winget install Python` |
+| `pdfplumber` | PDF text extraction | Recommended | `pip install pdfplumber` |
+| `poppler` | PDF fallback extraction | Alternative | `choco install poppler` |
 
 ## File Locations
 
-- Script: `$SKILL_DIR/scripts/lexguard_api.py`
-- Domain keywords: `resources/domain_keywords.json`
-- Development log: `$SKILL_DIR/DEVLOG.md`
-
----
-
-## Skill Version
-
-| Field | Value |
-|---|---|
-| **Version** | 1.3.0 |
-| **Updated** | 2026-04-15 |
-| **Changes** | Mandatory Korean output, strict response template, verbatim API quote rule, precedent existence check, source links |
-| **API** | Korea National Law Information Center (law.go.kr) Open API |
-| **Platform** | macOS / Linux |
-
-> When responding to legal questions, always display the skill version at the very end of your answer:
-> `LexGuard v1.3.0 | 국가법령정보센터 Open API`
+- Script: `%SKILL_DIR%\scripts\lexguard_api.py`
+- Domain keywords: `resources\domain_keywords.json`
+- Development log: `%SKILL_DIR%\DEVLOG.md`

@@ -14,8 +14,8 @@
       <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue" />
     </a>
     &nbsp;
-    <a href="https://img.shields.io/badge/platform-macOS%20%7C%20Linux-lightgrey">
-      <img alt="Platform" src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux-lightgrey" />
+    <a href="https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey">
+      <img alt="Platform" src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey" />
     </a>
     &nbsp;
     <a href="https://code.claude.com/docs/en/skills">
@@ -44,15 +44,33 @@
 - **계약서/약관 자동 분석**: 문서 붙여넣기 → 조항별 법적 이슈 탐지
 - **도메인 자동 분류** (노동·개인정보·부동산·소비자·세금·금융 등 13개)
 
-## 📂 Skill 설치 경로 (macOS)
+## 📂 Skill 설치 경로
 
-Claude Desktop·Claude Code 모두 동일한 경로를 사용합니다.
+Claude Desktop·Claude Code 모두 동일 경로를 사용합니다. Skill 신규 추가 시 Claude 1회 재시작 필요 (이후 파일 수정은 자동 감지).
+
+### 🍎 macOS / Linux
 
 ```
 ~/.claude/skills/hanlaw-skill/
 ```
 
-Finder에서 `Cmd+Shift+G` → 위 경로 붙여넣기 → 웹 빌더에서 다운로드한 `hanlaw-skill` 폴더를 통째로 복사하세요. 신규 Skill 추가 시 Claude를 1회 재시작하면 됩니다(이후 파일 수정은 자동 감지).
+Finder에서 `Cmd+Shift+G` → 위 경로 붙여넣기 → 웹 빌더에서 받은 `hanlaw-skill` 폴더를 통째로 복사.
+
+### 🪟 Windows
+
+```
+%USERPROFILE%\.claude\skills\hanlaw-skill\
+```
+
+파일 탐색기 주소창에 `%USERPROFILE%\.claude\skills` 입력 → 웹 빌더에서 받은 `hanlaw-skill` 폴더를 통째로 복사.
+
+**Windows 추가 설정** — OpenLaw API는 호출 PC의 공인 IP가 등록되어 있어야 합니다:
+
+1. 공인 IP 확인 (PowerShell):
+   ```powershell
+   (Invoke-WebRequest -Uri https://api.ipify.org).Content
+   ```
+2. [open.law.go.kr](https://open.law.go.kr) → 마이페이지 → **API인증값변경**에서 해당 IP 등록
 
 > 공식 문서: [Extend Claude with skills](https://code.claude.com/docs/en/skills)
 

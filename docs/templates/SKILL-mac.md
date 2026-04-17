@@ -1,9 +1,9 @@
 ---
-name: lexguard-macos
-description: "macOS/Linux version. Use when the user asks about Korean law, court precedents, or legal interpretations, or requests contract/terms analysis. Calls the Korea National Law Information Center Open API to search statutes, precedents, legal interpretations, and analyze contracts."
+name: hanlaw-skill
+description: "한국 법령·판례·법령해석 조회 Skill (macOS/Linux 버전). Use when the user asks about Korean law, court precedents, or legal interpretations, or requests contract/terms analysis. Calls the Korea National Law Information Center Open API."
 ---
 
-# LexGuard — Korean Legal Information Retrieval Skill (macOS / Linux)
+# hanlaw-skill — 한국 법률 정보 조회 Skill (macOS / Linux)
 
 > Helps find threads of legal information.
 > Does NOT replace legal counsel. Provides information based on official statute/precedent data.

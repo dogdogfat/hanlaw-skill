@@ -84,18 +84,26 @@ SKILL_DIR = SCRIPT_DIR.parent
 RESOURCES_DIR = SKILL_DIR / "resources"
 
 # ==============================================================================
-# 설정 (OpenAPI 키)
+# 설정 (OpenAPI 키 — 웹 빌더가 발급키로 치환하는 플레이스홀더)
 # ==============================================================================
+# 웹 빌더(https://dogdogfat.github.io/hanlaw-skill/)가 사용자의 API 키로
+# 아래 플레이스홀더를 치환합니다. 수동 설치 시에는 직접 수정하거나
+# LAW_API_KEY 환경변수를 설정하세요.
 _BUILTIN_API_KEY = "__LAW_API_KEY__"
 
 # 환경변수가 있으면 우선 사용, 없으면 내장 키 사용
 API_KEY = os.environ.get("LAW_API_KEY") or _BUILTIN_API_KEY
 
+# 플레이스홀더가 치환되지 않은 상태는 미설정으로 간주
+if API_KEY == "__LAW_API_KEY__":
+    API_KEY = ""
+
 # verify_config, download_form, analyze_doc 은 API 키 없이도 실행 가능 (또는 부분 실행)
 _NO_KEY_COMMANDS = {"verify_config", "download_form", "analyze_doc"}
 if not API_KEY and not (len(sys.argv) > 1 and sys.argv[1] in _NO_KEY_COMMANDS):
     print(json.dumps(
-        {"error": "LAW_API_KEY가 설정되지 않았습니다."},
+        {"error": "LAW_API_KEY가 설정되지 않았습니다.",
+         "guide": "웹 빌더로 발급키가 포함된 ZIP을 다시 받거나, LAW_API_KEY 환경변수를 설정하세요."},
         ensure_ascii=False
     ))
     sys.exit(1)
@@ -255,26 +263,17 @@ def _format_jo(article: str) -> str:
         "1"    → "000100"
         "10"   → "001000"
         "10-2" → "001002"
-        "10의2" / "10의3" → "001002" / "001003"  (한글 '의' 구분자 지원)
         "000100" (이미 6자리) → "000100" (통과)
     """
     if len(article) == 6 and article.isdigit():
         return article  # 이미 올바른 형식
 
-    # 한글 '의' 구분자 정규화 → '-'로 변환 후 처리 (예: "6의3" → "6-3")
-    if "의" in article:
-        article = article.replace("의", "-")
-
     if "-" in article:
         main_art, sub_art = article.split("-", 1)
-        if main_art.isdigit() and sub_art.isdigit():
-            return main_art.zfill(4) + sub_art.zfill(2)
+        return main_art.zfill(4) + sub_art.zfill(2)
 
     if article.isdigit():
         return article.zfill(4) + "00"
-
-    # 알 수 없는 형식: 원본 반환 (None 반환으로 JO=None URL 파라미터 생성 방지)
-    return article
 
 
 # ==============================================================================
